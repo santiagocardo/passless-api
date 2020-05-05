@@ -1,0 +1,38 @@
+{
+  "name": "passless-api",
+  "version": "1.0.0",
+  "description": "An API for passless",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "node server",
+    "lint": "standard --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/santiagocardo80/passless-api.git"
+  },
+  "author": "Santiago Cardona",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/santiagocardo80/passless-api/issues"
+  },
+  "homepage": "https://github.com/santiagocardo80/passless-api#readme",
+  "dependencies": {
+    "@passless/auth": "file:packages/passless-auth",
+    "@passless/crypto": "file:packages/passless-crypto",
+    "@passless/db": "file:packages/passless-db",
+    "@passless/services": "file:packages/passless-services",
+    "@plugins/authentication": "file:plugins/authentication",
+    "@routes/users": "file:routes/users",
+    "dotenv": "^8.2.0",
+    "fastify": "^2.13.1",
+    "fastify-helmet": "^3.0.2",
+    "pino-pretty": "^4.0.0"
+  },
+  "devDependencies": {
+    "lerna": "^3.20.2",
+    "nodemon": "^2.0.3",
+    "standard": "^14.3.3"
+  }
+}
