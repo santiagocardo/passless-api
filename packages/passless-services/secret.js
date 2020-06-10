@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('@passless/db')
-const { encrypt, decrypt } = require('@passless/crypto')
+const { encrypt, decrypt, generateRandomKey } = require('@passless/crypto')
 const { getSecretKey } = require('@passless/auth')
 
 async function createSecret (username, name, value) {
@@ -58,10 +58,28 @@ async function deleteSecret (username, name) {
   })
 }
 
+async function updateAllSecrets (username, oldKey, newKey) {
+  const [user, secrets] = await Promise.all([
+    db.User.findOne({ where: { username } }),
+    db.Secret.findAll({ where: { username } })
+  ])
+
+  const oldRandomKey = user.randomKey
+  const newRandomKey = generateRandomKey()
+
+  for await (const secret of secrets.rows) {
+    const encryptedValue = secret.value
+    const value = decrypt(encryptedValue, oldKey, oldRandomKey)
+    secret.value = encrypt(value, newKey, newRandomKey)
+    secret.save()
+  }
+}
+
 module.exports = {
   createSecret,
   listSecrets,
   getSecret,
   updateSecret,
-  deleteSecret
+  deleteSecret,
+  updateAllSecrets
 }

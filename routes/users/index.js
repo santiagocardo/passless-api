@@ -15,6 +15,7 @@ async function userRoutes (fastify, options) {
     $id: 'createUser',
     type: 'object',
     properties: {
+      username: { type: 'string' },
       password: { type: 'string' }
     },
     required: ['username', 'password']
@@ -44,7 +45,6 @@ async function userRoutes (fastify, options) {
   fastify.post(
     '/users',
     {
-      preValidation: fastify.auth([fastify.validateJWT]),
       schema: {
         body: 'createUser#',
         response: {
@@ -56,6 +56,19 @@ async function userRoutes (fastify, options) {
       const { username, fullName, password } = request.body
       reply.code(201)
       return userServices.createUser(username, fullName, password)
+    }
+  )
+
+  fastify.put(
+    '/users',
+    {
+      preValidation: fastify.auth([fastify.validateJWT])
+    },
+    async (request, reply) => {
+      const { user: username } = request.user
+      const { oldPassword, newPassword } = request.body
+      await userServices.changePassword(username, oldPassword, newPassword)
+      return { status: 'in process' }
     }
   )
 }
